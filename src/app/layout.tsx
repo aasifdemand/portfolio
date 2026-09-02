@@ -5,6 +5,7 @@ import { CursorFollower } from "@/components/cursor-follower";
 import { InteractiveBackground } from "@/components/interactive-background";
 import { SectionNavigator } from "@/components/section-navigator";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -142,6 +143,7 @@ export default function RootLayout({
           <SectionNavigator />
           <CursorFollower />
           {children}
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
