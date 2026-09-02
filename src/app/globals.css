@@ -159,8 +159,8 @@
   }
 }
 
-/* ─── Custom cursor — only on pointer (mouse) devices ──── */
-@media (pointer: fine) {
+/* ─── Custom cursor — only on desktop pointer (mouse) devices ──── */
+@media (pointer: fine) and (min-width: 768px) {
   *,
   *::before,
   *::after {

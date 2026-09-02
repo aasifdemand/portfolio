@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export function CursorFollower() {
+  const [isEnabled, setIsEnabled] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -16,6 +17,17 @@ export function CursorFollower() {
   const ringY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
+    // Only enable on desktop devices with mouse/trackpad and screen width >= 768px
+    const isPointerFine = window.matchMedia("(pointer: fine)").matches;
+    const isNotTouchOnly = !window.matchMedia("(hover: none)").matches;
+    const isDesktopWidth = window.innerWidth >= 768;
+
+    if (!isPointerFine || !isNotTouchOnly || !isDesktopWidth) {
+      return;
+    }
+
+    setIsEnabled(true);
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -60,11 +72,16 @@ export function CursorFollower() {
     };
   }, [mouseX, mouseY, isVisible]);
 
+  // Completely disabled on mobile and touch devices
+  if (!isEnabled) {
+    return null;
+  }
+
   return (
     <>
       {/* Outer glow ring — lags behind for trail effect */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full"
+        className="hidden md:block fixed top-0 left-0 pointer-events-none z-[9999] rounded-full"
         animate={{
           width: isHovering ? 56 : 36,
           height: isHovering ? 56 : 36,
@@ -85,7 +102,7 @@ export function CursorFollower() {
 
       {/* Inner dot — tracks exactly with the mouse */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full"
+        className="hidden md:block fixed top-0 left-0 pointer-events-none z-[9999] rounded-full"
         animate={{
           opacity: isVisible ? 1 : 0,
           scale: isHovering ? 0 : 1,
